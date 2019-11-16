@@ -34,16 +34,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().
-                antMatchers("")
-                .access("hasAnyAuthority('USER','ADMIN')")
-                .antMatchers("/admin")
-                .access("hasAuthority('ADMIN')")
+                antMatchers("/", "/h2-console/**").permitAll()
+                .antMatchers("/admin").access("hasAuthority('ADMIN')")
                 .anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").permitAll()
-                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("login").permitAll()
+                .and().formLogin().loginPage("/login").permitAll()
+                .and().logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login").permitAll().permitAll()
                 .and().httpBasic();
+
         http.csrf().disable();
         http.headers().frameOptions().disable();
     }
